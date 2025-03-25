@@ -1745,11 +1745,20 @@ class narrow(Command):
     disable narrowing.
     """
     def execute(self):
-        if self.fm.thisdir.marked_items:
-            selection = [f.basename for f in self.fm.thistab.get_selection()]
-            self.fm.thisdir.narrow_filter = selection
-        else:
+
+        # if narrow is already enabled, just disable it
+        if self.fm.thisdir.narrow_filter is not None:
             self.fm.thisdir.narrow_filter = None
+
+        else:
+            if self.fm.thisdir.marked_items:
+                # enable narrow since there are marked items
+                selection = [f.basename for f in self.fm.thistab.get_selection()]
+                self.fm.thisdir.narrow_filter = selection
+            else:
+                # disable narrow since there are no marked items
+                self.fm.thisdir.narrow_filter = None
+
         self.fm.thisdir.refilter()
 
 
